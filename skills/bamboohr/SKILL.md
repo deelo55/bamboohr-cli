@@ -1,23 +1,23 @@
 ---
 name: bamboohr
-description: Query and update BambooHR data (employees, time off, compensation, reports, custom fields) using the `bamboo` CLI. Use whenever the user asks about people in the company, HR data, time off / who's out, salaries, hiring history, org structure, training, benefits, or anything that lives in BambooHR.
+description: Query and update BambooHR data (employees, time off, compensation, reports, custom fields) using the `bamboohr` CLI. Use whenever the user asks about people in the company, HR data, time off / who's out, salaries, hiring history, org structure, training, benefits, or anything that lives in BambooHR.
 ---
 
 # BambooHR
 
-You have access to a `bamboo` CLI that talks to the BambooHR API. Every command emits JSON to stdout, so pipe results into `node -e` or `jq` to filter and aggregate.
+You have access to a `bamboohr` CLI that talks to the BambooHR API. Every command emits JSON to stdout, so pipe results into `node -e` or `jq` to filter and aggregate.
 
 ## Before you start
 
 Check authentication first:
 
 ```bash
-bamboo status
+bamboohr status
 ```
 
 If unauthenticated, ask the user which method to use:
-- `bamboo login --domain <subdomain> --api-key <key>` (or via `BAMBOOHR_DOMAIN` / `BAMBOOHR_API_KEY`)
-- `bamboo login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>` (or env vars). This opens a browser for authorization.
+- `bamboohr login --domain <subdomain> --api-key <key>` (or via `BAMBOOHR_DOMAIN` / `BAMBOOHR_API_KEY`)
+- `bamboohr login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>` (or env vars). This opens a browser for authorization.
 
 Never invent credentials. If the user has not provided them, ask.
 
@@ -28,7 +28,7 @@ Never invent credentials. If the user has not provided them, ask.
 The directory is the only listing endpoint — there is no search. Pull the directory and filter in JS:
 
 ```bash
-bamboo employees directory | node -e "
+bamboohr employees directory | node -e "
 const d = JSON.parse(require('fs').readFileSync(0,'utf8'));
 const emps = d.employees || d;
 const q = 'NAME OR EMAIL'.toLowerCase();
@@ -43,16 +43,16 @@ Common ambiguity: surnames like `D'souza` can match multiple people (e.g. Dwayne
 
 ### Get an employee's details
 
-`bamboo employees get <id>` returns only 8 default fields. To get more, pass `--fields` with a comma-separated list:
+`bamboohr employees get <id>` returns only 8 default fields. To get more, pass `--fields` with a comma-separated list:
 
 ```bash
-bamboo employees get 113 --fields "firstName,lastName,payRate,payType,hireDate,customHiringManager"
+bamboohr employees get 113 --fields "firstName,lastName,payRate,payType,hireDate,customHiringManager"
 ```
 
 To discover field names (including custom fields like `customHiringManager`, `customHiringTalentPartner1`, etc.):
 
 ```bash
-bamboo meta fields
+bamboohr meta fields
 ```
 
 There are typically hundreds of custom fields. Filter the metadata output to find what you need.
@@ -63,10 +63,10 @@ Salary is in the `compensation` table or via specific fields:
 
 ```bash
 # Via fields
-bamboo employees get <id> --fields "payRate,payType,payPer,payRateEffectiveDate"
+bamboohr employees get <id> --fields "payRate,payType,payPer,payRateEffectiveDate"
 
 # Or via the compensation table (history of changes)
-bamboo tables get <id> compensation
+bamboohr tables get <id> compensation
 ```
 
 Requires the `employee:compensation` scope if using OAuth (see Scopes section below).
@@ -74,9 +74,9 @@ Requires the `employee:compensation` scope if using OAuth (see Scopes section be
 ### Time off
 
 ```bash
-bamboo time-off whos-out --start 2026-05-12 --end 2026-12-31
-bamboo time-off requests --employee-id <id> --start <date> --end <date>
-bamboo time-off balance <id>
+bamboohr time-off whos-out --start 2026-05-12 --end 2026-12-31
+bamboohr time-off requests --employee-id <id> --start <date> --end <date>
+bamboohr time-off balance <id>
 ```
 
 `whos-out` returns confirmed/approved time off only. If `requests` returns an empty array for a future range, the person genuinely has nothing booked — don't infer otherwise.
@@ -86,7 +86,7 @@ bamboo time-off balance <id>
 For data that spans many fields or filters across the whole company, use custom reports instead of iterating the directory:
 
 ```bash
-bamboo reports custom --fields "firstName,lastName,department,hireDate,customHiringManager" --title "Hiring history"
+bamboohr reports custom --fields "firstName,lastName,department,hireDate,customHiringManager" --title "Hiring history"
 ```
 
 The output is `{ employees: { "<id>": { ... } } }`. Convert to an array with `Object.values()`.
@@ -96,7 +96,7 @@ The output is `{ employees: { "<id>": { ... } } }`. Convert to an array with `Ob
 The hiring manager is in `customHiringManager` (a string, not an ID). Pull a report including that field and filter:
 
 ```bash
-bamboo reports custom --fields "firstName,lastName,jobTitle,department,hireDate,customHiringManager,status" --title "Hires" | node -e "
+bamboohr reports custom --fields "firstName,lastName,jobTitle,department,hireDate,customHiringManager,status" --title "Hires" | node -e "
 const d = JSON.parse(require('fs').readFileSync(0,'utf8'));
 const target = 'EXACT NAME';
 const hires = Object.values(d.employees).filter(e => e.customHiringManager === target);
@@ -112,7 +112,7 @@ hires.forEach(e => console.log(e.hireDate, e.firstName, e.lastName, '-', e.jobTi
 The `supervisor` field on each directory entry is the manager's display name (string). To count direct reports:
 
 ```bash
-bamboo employees directory | node -e "
+bamboohr employees directory | node -e "
 const d = JSON.parse(require('fs').readFileSync(0,'utf8'));
 const emps = d.employees || d;
 const target = 'EXACT MANAGER NAME';
@@ -155,9 +155,9 @@ Mapping: if a command 401s, infer the scope from the endpoint it hits — `table
 When unsure which fields, tables, or endpoints exist, ask the CLI:
 
 ```bash
-bamboo --help
-bamboo <group> --help
-bamboo meta fields            # all employee fields including custom
-bamboo meta tabular-fields    # all table names
-bamboo datasets list          # all queryable datasets
+bamboohr --help
+bamboohr <group> --help
+bamboohr meta fields            # all employee fields including custom
+bamboohr meta tabular-fields    # all table names
+bamboohr datasets list          # all queryable datasets
 ```

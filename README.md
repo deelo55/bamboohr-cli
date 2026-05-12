@@ -9,10 +9,10 @@ npm install
 npm run build
 ```
 
-The CLI is exposed as `bamboo` via the `bin` entry in `package.json`. To run it directly from the repo:
+The CLI is exposed as `bamboohr` via the `bin` entry in `package.json`. To run it directly from the repo:
 
 ```bash
-node bin/bamboo.js --help
+node bin/bamboohr.js --help
 ```
 
 ## Authentication
@@ -22,7 +22,7 @@ The CLI supports two authentication methods.
 ### API Key
 
 ```bash
-bamboo login --domain <your-subdomain> --api-key <your-api-key>
+bamboohr login --domain <your-subdomain> --api-key <your-api-key>
 ```
 
 Or set environment variables to avoid leaking secrets via `ps`:
@@ -30,7 +30,7 @@ Or set environment variables to avoid leaking secrets via `ps`:
 ```bash
 export BAMBOOHR_DOMAIN=your-subdomain
 export BAMBOOHR_API_KEY=your-api-key
-bamboo login
+bamboohr login
 ```
 
 ### OAuth
@@ -40,7 +40,7 @@ Requires an OAuth application registered in your BambooHR developer portal with:
 - Scopes assigned to the app (see below)
 
 ```bash
-bamboo login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>
+bamboohr login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>
 ```
 
 Or via environment variables: `BAMBOOHR_DOMAIN`, `BAMBOOHR_CLIENT_ID`, `BAMBOOHR_CLIENT_SECRET`.
@@ -64,8 +64,8 @@ If a request returns 401 on a specific endpoint (e.g. `/employees/directory` wor
 ### Other auth commands
 
 ```bash
-bamboo status   # Show current authentication
-bamboo logout   # Clear stored credentials
+bamboohr status   # Show current authentication
+bamboohr logout   # Clear stored credentials
 ```
 
 ## Command Reference
@@ -215,10 +215,10 @@ Stored at `~/.bamboohr-cli/config.json` (created with mode 0700, file mode 0600)
 `employees get <id>` returns only 8 default fields. To retrieve custom fields, pass them via `--fields`:
 
 ```bash
-bamboo employees get 113 --fields "firstName,lastName,payRate,customHiringManager"
+bamboohr employees get 113 --fields "firstName,lastName,payRate,customHiringManager"
 ```
 
-To discover available field names (including custom fields), use `bamboo meta fields`. Field IDs are also valid in `--fields`.
+To discover available field names (including custom fields), use `bamboohr meta fields`. Field IDs are also valid in `--fields`.
 
 ## Skill for AI agents
 

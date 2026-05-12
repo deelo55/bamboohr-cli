@@ -19,7 +19,7 @@ import { registerTablesCommands } from './commands/tables.js';
 const program = new Command();
 
 program
-  .name('bamboo')
+  .name('bamboohr')
   .description('BambooHR CLI — interact with BambooHR API from the command line')
   .version('1.0.0');
 

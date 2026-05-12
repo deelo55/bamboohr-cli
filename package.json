@@ -4,12 +4,12 @@
   "description": "CLI for BambooHR API - designed for agentic AI usage",
   "type": "module",
   "bin": {
-    "bamboo": "./bin/bamboo.js"
+    "bamboohr": "./bin/bamboohr.js"
   },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "start": "node bin/bamboo.js"
+    "start": "node bin/bamboohr.js"
   },
   "keywords": [
     "bamboohr",

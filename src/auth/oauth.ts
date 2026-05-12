@@ -138,7 +138,7 @@ async function exchangeCodeForToken(
 export async function refreshAccessToken(config: Config): Promise<string> {
   const auth = config.auth;
   if (auth?.method !== 'oauth' || !auth.refreshToken || !auth.clientId || !auth.clientSecret || !config.companyDomain) {
-    throw new Error('Cannot refresh token — missing OAuth credentials. Run: bamboo login-oauth');
+    throw new Error('Cannot refresh token — missing OAuth credentials. Run: bamboohr login-oauth');
   }
 
   const res = await fetch(`${getTokenUrl(config.companyDomain)}?request=token`, {

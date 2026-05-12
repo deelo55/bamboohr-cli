@@ -10,11 +10,6 @@ function resolveSecret(flagValue: string | undefined, envVar: string, label: str
   if (!value) {
     throw new Error(`Missing ${label}. Provide --${label.toLowerCase().replace(/\s+/g, '-')} or set ${envVar}.`);
   }
-  if (flagValue) {
-    process.stderr.write(
-      `warning: passing ${label} on the command line exposes it to other processes via 'ps'. Prefer ${envVar}.\n`,
-    );
-  }
   return value;
 }
 

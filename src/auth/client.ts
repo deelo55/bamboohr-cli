@@ -27,17 +27,17 @@ export interface RequestOptions {
 
 function getAuthHeaders(config: Config): Record<string, string> {
   const auth = config.auth;
-  if (!auth) throw new Error('Not logged in. Run: bamboo login');
+  if (!auth) throw new Error('Not logged in. Run: bamboohr login');
 
   if (auth.method === 'oauth') {
-    if (!auth.accessToken) throw new Error('OAuth token not found. Run: bamboo login --oauth');
+    if (!auth.accessToken) throw new Error('OAuth token not found. Run: bamboohr login-oauth');
     return {
       Authorization: `Bearer ${auth.accessToken}`,
       Accept: 'application/json',
     };
   }
 
-  if (!auth.apiKey) throw new Error('API key not found. Run: bamboo login');
+  if (!auth.apiKey) throw new Error('API key not found. Run: bamboohr login');
   return getApiKeyHeaders(auth.apiKey);
 }
 

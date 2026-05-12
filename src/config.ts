@@ -45,7 +45,7 @@ export function clearConfig(): void {
 
 export function getBaseUrl(config: Config): string {
   if (!config.companyDomain) {
-    throw new Error('Not logged in. Run: bamboo login');
+    throw new Error('Not logged in. Run: bamboohr login');
   }
   return `https://api.bamboohr.com/api/gateway.php/${config.companyDomain}/v1`;
 }
