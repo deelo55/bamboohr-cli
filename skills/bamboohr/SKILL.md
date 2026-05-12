@@ -89,7 +89,14 @@ For data that spans many fields or filters across the whole company, use custom 
 bamboohr reports custom --fields "firstName,lastName,department,hireDate,customHiringManager" --title "Hiring history"
 ```
 
-The output is `{ employees: { "<id>": { ... } } }`. Convert to an array with `Object.values()`.
+The output is `{ employees: { "<key>": { ... } } }`. **The outer key is NOT the employee ID** — it's an arbitrary internal key. The real employee ID is in `record.id` inside each entry. Always re-index by `record.id` if you need to join with directory data:
+
+```js
+const byId = {};
+Object.values(rep.employees).forEach(e => { byId[e.id] = e; });
+```
+
+Convert to an array with `Object.values()` for filtering.
 
 ### Hiring manager / who hired whom
 
