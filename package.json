@@ -1,0 +1,29 @@
+{
+  "name": "bamboohr-cli",
+  "version": "1.0.0",
+  "description": "CLI for BambooHR API - designed for agentic AI usage",
+  "type": "module",
+  "bin": {
+    "bamboo": "./bin/bamboo.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "start": "node bin/bamboo.js"
+  },
+  "keywords": [
+    "bamboohr",
+    "hr",
+    "cli",
+    "api"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "tsup": "^8.4.0",
+    "typescript": "^5.7.0"
+  }
+}
