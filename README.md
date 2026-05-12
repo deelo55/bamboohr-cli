@@ -1,0 +1,211 @@
+# BambooHR CLI
+
+A command-line interface for the BambooHR API. Designed for agentic AI usage with structured JSON output for every command.
+
+## Installation
+
+```bash
+npm install
+npm run build
+```
+
+The CLI is exposed as `bamboo` via the `bin` entry in `package.json`. To run it directly from the repo:
+
+```bash
+node bin/bamboo.js --help
+```
+
+## Authentication
+
+The CLI supports two authentication methods.
+
+### API Key
+
+```bash
+bamboo login --domain <your-subdomain> --api-key <your-api-key>
+```
+
+Or set environment variables to avoid leaking secrets via `ps`:
+
+```bash
+export BAMBOOHR_DOMAIN=your-subdomain
+export BAMBOOHR_API_KEY=your-api-key
+bamboo login
+```
+
+### OAuth
+
+Requires an OAuth application registered in your BambooHR developer portal with:
+- Redirect URI: `http://localhost:19876/callback`
+- Scopes assigned to the app
+
+```bash
+bamboo login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>
+```
+
+Or via environment variables: `BAMBOOHR_DOMAIN`, `BAMBOOHR_CLIENT_ID`, `BAMBOOHR_CLIENT_SECRET`.
+
+A browser will open to the BambooHR authorization page. After approval, tokens are stored in `~/.bamboohr-cli/config.json` (mode 0600) and used automatically for subsequent requests.
+
+### Other auth commands
+
+```bash
+bamboo status   # Show current authentication
+bamboo logout   # Clear stored credentials
+```
+
+## Command Reference
+
+Every command returns JSON. Use `--help` on any subcommand for full option details.
+
+### Employees
+
+| Command | Description |
+|---|---|
+| `employees directory` | Employee directory |
+| `employees list` | List all employees (IDs only) |
+| `employees get <id>` | Get employee by ID. Use `--fields` for custom fields |
+| `employees create` | Create a new employee |
+| `employees update <id>` | Update an employee |
+| `employees changed` | Employees whose data has changed since a date |
+| `employees photo <id>` | Get employee photo URL |
+
+### Time Off
+
+| Command | Description |
+|---|---|
+| `time-off requests` | List time off requests |
+| `time-off create-request` | Create a time off request |
+| `time-off update-request <id>` | Update request status |
+| `time-off types` | List time off types |
+| `time-off policies` | List time off policies |
+| `time-off employee-policies <id>` | Policies for an employee |
+| `time-off assign-policies <id>` | Assign policies to an employee |
+| `time-off balance <id>` | Get an employee's balance |
+| `time-off adjust-balance <id>` | Adjust an employee's balance |
+| `time-off history <id>` | Create a history entry |
+| `time-off whos-out` | Who is currently out |
+
+### Time Tracking
+
+| Command | Description |
+|---|---|
+| `time-tracking entries` | List timesheet entries |
+| `time-tracking clock-in` | Clock in an employee |
+| `time-tracking clock-out` | Clock out an employee |
+| `time-tracking clock-entries` | Create/update clock entries |
+| `time-tracking hour-entries` | Create/update hour entries |
+| `time-tracking delete-clock-entries` | Delete clock entries |
+| `time-tracking delete-hour-entries` | Delete hour entries |
+| `time-tracking create-project` | Create a time tracking project |
+| `time-tracking breaks` | Manage meal & rest break policies |
+
+### Hours
+
+| Command | Description |
+|---|---|
+| `hours get <id>` | Get an hour record |
+| `hours create` | Create an hour record |
+| `hours update <id>` | Update an hour record |
+| `hours delete <id>` | Delete an hour record |
+| `hours bulk` | Bulk create/update hour records |
+
+### Metadata
+
+| Command | Description |
+|---|---|
+| `meta fields` | List configured employee fields (includes custom fields) |
+| `meta list-fields` | List custom list fields |
+| `meta update-list-field <id>` | Update list field values |
+| `meta tabular-fields` | List tabular data fields |
+| `meta countries` | List countries |
+| `meta states <countryId>` | List states for a country |
+| `meta timezones` | List timezones |
+| `meta users` | List system users |
+| `meta integrations` | Integration settings |
+
+### Files
+
+| Command | Description |
+|---|---|
+| `files company` | Company files |
+| `files employee` | Employee files |
+
+### Reports
+
+| Command | Description |
+|---|---|
+| `reports list` | List available reports |
+| `reports get <id>` | Get a specific report |
+| `reports custom` | Run a custom report (specify fields and filters) |
+
+### Datasets
+
+| Command | Description |
+|---|---|
+| `datasets list` | List available datasets |
+| `datasets fields <id>` | List fields for a dataset |
+| `datasets field-options <id>` | Get field options |
+| `datasets query <id>` | Query a dataset |
+
+### Tables
+
+Tabular employee data (compensation, jobInfo, employmentStatus, etc.).
+
+| Command | Description |
+|---|---|
+| `tables get <employeeId> <tableName>` | Get table data |
+| `tables create <employeeId> <tableName>` | Add a row |
+| `tables update <employeeId> <tableName> <rowId>` | Update a row |
+| `tables delete <employeeId> <tableName> <rowId>` | Delete a row |
+| `tables changed <employeeId> <tableName>` | Changed rows since a date |
+
+### Goals
+
+`goals list`, `goals create`, `goals update`, `goals delete`, `goals close`, `goals reopen`, `goals progress`, `goals milestone-progress`, `goals sharing`, `goals aggregate`, `goals status-counts`, `goals filters`, `goals creation-permission`, `goals sharing-options`, `goals alignable-options`, `goals comments`, `goals add-comment`, `goals update-comment`, `goals delete-comment`.
+
+### Training
+
+`training list-types`, `training create-type`, `training update-type`, `training delete-type`, `training list-categories`, `training create-category`, `training update-category`, `training delete-category`, `training list <employeeId>`, `training create <employeeId>`, `training update <employeeId> <trainingId>`, `training delete <employeeId> <trainingId>`.
+
+### Benefits
+
+`benefits list`, `benefits coverages`, `benefits deduction-types`, `benefits employee <id>`, `benefits member <id>`, `benefits member-events <id>`, `benefits dependents <id>`, `benefits get-dependent`, `benefits create-dependent`, `benefits update-dependent`.
+
+### Recruiting
+
+`recruiting jobs`, `recruiting create-job`, `recruiting applicants`, `recruiting get-applicant <id>`, `recruiting add-comment <id>`, `recruiting statuses`, `recruiting update-status <id>`, `recruiting locations`, `recruiting hiring-leads`, `recruiting create-candidate`.
+
+### Webhooks
+
+`webhooks list`, `webhooks get <id>`, `webhooks create`, `webhooks update <id>`, `webhooks delete <id>`, `webhooks logs <id>`, `webhooks monitor-fields`, `webhooks post-fields`.
+
+### Photos
+
+`photos get <employeeId>`, `photos upload <employeeId>`.
+
+## Output Format
+
+All commands emit JSON to stdout. Errors emit a JSON object with `error` to stderr and exit with a non-zero code. This makes the CLI safe to pipe into `jq`, `node`, or another script.
+
+## Configuration
+
+Stored at `~/.bamboohr-cli/config.json` (created with mode 0700, file mode 0600). Contains:
+
+- `companyDomain` — your BambooHR subdomain
+- `auth.method` — `api-key` or `oauth`
+- Credentials specific to the method (API key, OAuth tokens)
+
+## Notes on custom fields
+
+`employees get <id>` returns only 8 default fields. To retrieve custom fields, pass them via `--fields`:
+
+```bash
+bamboo employees get 113 --fields "firstName,lastName,payRate,customHiringManager"
+```
+
+To discover available field names (including custom fields), use `bamboo meta fields`. Field IDs are also valid in `--fields`.
+
+## Skill for AI agents
+
+A `bamboohr` skill is bundled in `skills/bamboohr/` for use with Claude Code and the Claude Agent SDK. See [skills/bamboohr/SKILL.md](skills/bamboohr/SKILL.md).
