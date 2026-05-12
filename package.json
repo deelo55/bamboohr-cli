@@ -9,7 +9,9 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "start": "node bin/bamboohr.js"
+    "start": "node bin/bamboohr.js",
+    "install-cli": "npm install && npm run build && npm link",
+    "uninstall-cli": "npm unlink -g bamboohr-cli"
   },
   "keywords": [
     "bamboohr",

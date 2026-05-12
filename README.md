@@ -4,14 +4,28 @@ A command-line interface for the BambooHR API. Designed for agentic AI usage wit
 
 ## Installation
 
+One-liner — installs dependencies, builds, and links `bamboohr` globally:
+
 ```bash
-npm install
-npm run build
+npm run install-cli
 ```
 
-The CLI is exposed as `bamboohr` via the `bin` entry in `package.json`. To run it directly from the repo:
+After this, `bamboohr` is on your `PATH`:
 
 ```bash
+bamboohr --help
+```
+
+To uninstall:
+
+```bash
+npm run uninstall-cli
+```
+
+If you'd rather not link globally, you can run it directly from the repo:
+
+```bash
+npm install && npm run build
 node bin/bamboohr.js --help
 ```
 
