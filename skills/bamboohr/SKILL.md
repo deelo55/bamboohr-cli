@@ -69,7 +69,7 @@ bamboo employees get <id> --fields "payRate,payType,payPer,payRateEffectiveDate"
 bamboo tables get <id> compensation
 ```
 
-Requires the `employee:compensation` scope if using OAuth.
+Requires the `employee:compensation` scope if using OAuth (see Scopes section below).
 
 ### Time off
 
@@ -133,8 +133,22 @@ For transitive reports (whole org under someone), recurse over `supervisor === <
 
 - **Don't guess employee IDs.** Always look them up via the directory first.
 - **Don't query `/employees/directory` if you only need one person's basic info** — it returns the entire company. Use `employees get <id>` once you have the ID.
-- **Don't assume scopes.** OAuth tokens are scoped to what was approved at login. If a request returns 401 on a specific endpoint (e.g. `/employees/directory` works but compensation fails), the user likely needs to re-login with broader scopes.
+- **Don't assume scopes.** OAuth tokens are scoped to what the developer-portal app has enabled. If a request returns 401 on a specific endpoint (e.g. `/employees/directory` works but compensation fails), the corresponding scope is missing from the app — the user must enable it in the developer portal and re-run `login-oauth`. The CLI itself already requests every available scope.
 - **Don't try to write data without explicit user confirmation.** `create`, `update`, `delete`, `clock-in/out`, `adjust-balance` etc. mutate live HR records.
+
+## OAuth scopes (full list)
+
+The CLI requests every scope BambooHR offers. The app in the developer portal must have these enabled, or BambooHR returns `invalid_scope` at login. There are no other scopes (no `offline_access`, no wildcards).
+
+**Employee group:** `employee`, `employee:assets`, `employee:compensation`, `employee:contact`, `employee:custom_fields`, `employee:custom_fields_encrypted`, `employee:demographic`, `employee:dependent`, `employee:dependent:ssn`, `employee:education`, `employee:emergency_contacts`, `employee:file`, `employee:identification`, `employee:job`, `employee:management`, `employee:name`, `employee:payroll`, `employee:photo`, `employee:providers`, `employee:providers:payroll`, `employee_directory`, `employee_verifications`, `esignature`, `goal`, `onboarding`, `performance:assessments`, `performance:feedback`, `performance:one_on_ones`
+
+**Reports group:** `report`
+
+**Time Off group:** `time_off`
+
+**OIDC basics:** `openid`, `email`
+
+Mapping: if a command 401s, infer the scope from the endpoint it hits — `tables get <id> compensation` needs `employee:compensation`; `time-off whos-out` needs `time_off`; `reports custom` needs `report`; `employees directory` needs `employee_directory`. Tell the user to enable the missing scope in the developer portal and re-run `login-oauth`.
 
 ## Discovery
 

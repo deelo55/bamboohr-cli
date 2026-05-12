@@ -37,7 +37,7 @@ bamboo login
 
 Requires an OAuth application registered in your BambooHR developer portal with:
 - Redirect URI: `http://localhost:19876/callback`
-- Scopes assigned to the app
+- Scopes assigned to the app (see below)
 
 ```bash
 bamboo login-oauth --domain <subdomain> --client-id <id> --client-secret <secret>
@@ -46,6 +46,20 @@ bamboo login-oauth --domain <subdomain> --client-id <id> --client-secret <secret
 Or via environment variables: `BAMBOOHR_DOMAIN`, `BAMBOOHR_CLIENT_ID`, `BAMBOOHR_CLIENT_SECRET`.
 
 A browser will open to the BambooHR authorization page. After approval, tokens are stored in `~/.bamboohr-cli/config.json` (mode 0600) and used automatically for subsequent requests.
+
+#### Available scopes
+
+The CLI requests all scopes BambooHR offers. The app must have these enabled in the developer portal for the request to succeed:
+
+**Employee:** `employee`, `employee:assets`, `employee:compensation`, `employee:contact`, `employee:custom_fields`, `employee:custom_fields_encrypted`, `employee:demographic`, `employee:dependent`, `employee:dependent:ssn`, `employee:education`, `employee:emergency_contacts`, `employee:file`, `employee:identification`, `employee:job`, `employee:management`, `employee:name`, `employee:payroll`, `employee:photo`, `employee:providers`, `employee:providers:payroll`, `employee_directory`, `employee_verifications`, `esignature`, `goal`, `onboarding`, `performance:assessments`, `performance:feedback`, `performance:one_on_ones`
+
+**Reports:** `report`
+
+**Time Off:** `time_off`
+
+Plus the OpenID Connect basics: `openid`, `email`.
+
+If a request returns 401 on a specific endpoint (e.g. `/employees/directory` works but compensation fails), the app likely needs the corresponding scope enabled — update the app in the developer portal, then re-run `login-oauth`.
 
 ### Other auth commands
 
